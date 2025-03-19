@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="/Cookie2/img/favicon.ico" type="image/x-icon" />
+    <title>Tevxion - Belanja</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Toko Tevxion</h1>
+      <div class="header-icons">
+        <a href="/web/index.html" class="back-btn"
+          ><i class="fas fa-arrow-left"></i> Kembali</a
+        >
+        <div class="cart-container">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count">0</span>
+        </div>
+      </div>
+    </header>
+    <div class="filter-section">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Cari produk..." />
+        <i class="fas fa-search"></i>
+      </div>
+      <div class="filter-controls">
+        <select id="sortBy">
+          <option value="">Urutkan Berdasarkan</option>
+          <option value="priceAsc">Harga: Rendah ke Tinggi</option>
+          <option value="priceDesc">Harga: Tinggi ke Rendah</option>
+          <option value="dateDesc">Terbaru</option>
+          <option value="dateAsc">Terlama</option>
+        </select>
+        <select id="filterCategory">
+          <option value="">Semua Kategori</option>
+          <option value="laptop">Laptop</option>
+          <option value="pc">PC</option>
+          <option value="handphone">Handphone</option>
+        </select>
+      </div>
+    </div>
+    <main>
+      <div class="products-container">
+        <div class="product-card">
+          <img src="/img/Laptop.jpg" height="100" width="100" alt="Laptop" />
+          <h3>Laptop Gaming</h3>
+          <p class="price">Rp 15.999.000</p>
+          <div class="button-group">
+            <button class="cart-btn"><i class="fas fa-cart-plus"></i></button>
+            <button class="buy-btn">
+              <i class="fas fa-shopping-bag"></i> Beli
+            </button>
+          </div>
+        </div>
+        <div class="product-card">
+          <img
+            src="/img/PC Gaming.jpg"
+            height="100"
+            width="100"
+            alt="Pcgaming"
+          />
+          <h3>Pc Gaming</h3>
+          <p class="price">Rp 55.999.000</p>
+          <div class="button-group">
+            <button class="cart-btn"><i class="fas fa-cart-plus"></i></button>
+            <button class="buy-btn">
+              <i class="fas fa-shopping-bag"></i> Beli
+            </button>
+          </div>
+        </div>
+        <!-- Tambahkan 8 produk lainnya dengan struktur yang sama -->
+        <!-- Produk 3 -->
+        <div class="product-card">
+          <img
+            src="/img/Handphone.jpg"
+            width="100"
+            height="100"
+            alt="Headphone"
+          />
+          <h3>Headphone</h3>
+          <p class="price">Rp 18.000.000</p>
+          <div class="button-group">
+            <button class="cart-btn"><i class="fas fa-cart-plus"></i></button>
+            <button class="buy-btn">
+              <i class="fas fa-shopping-bag"></i> Beli
+            </button>
+          </div>
+        </div>
+        <!-- Produk 4-10 dengan struktur yang sama -->
+      </div>
+    </main>
+    <div class="cart-sticky">
+      <i class="fas fa-shopping-cart"></i>
+      <span class="cart-count">0</span>
+      <span class="cart-total">Rp 0</span>
+    </div>
+
+    <!-- Add Receipt Modal -->
+    <div class="receipt-modal" id="receiptModal">
+      <div class="receipt-content">
+        <div class="receipt">
+          <div class="receipt-header">
+            <h2>TEVXION STORE</h2>
+            <p>Jl. Teknologi No. 123</p>
+            <p>Telp: (021) 555-0123</p>
+            <hr>
+            <p class="receipt-date"></p>
+          </div>
+          <div class="receipt-items">
+            <!-- Items will be inserted here -->
+          </div>
+          <div class="receipt-summary">
+            <!-- Summary will be inserted here -->
+          </div>
+          <div class="receipt-footer">
+            <p>Terima kasih telah berbelanja</p>
+            <p>Barang yang sudah dibeli tidak dapat dikembalikan</p>
+          </div>
+        </div>
+        <button class="print-btn" onclick="printReceipt()">
+          <i class="fas fa-print"></i> Print
+        </button>
+        <button class="close-btn" onclick="closeReceipt()">
+          <i class="fas fa-times"></i> Close
+        </button>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

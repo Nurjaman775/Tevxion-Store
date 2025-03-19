@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cashier Dashboard - Tevxion</title>
+    <link rel="stylesheet" href="dashboard.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="dashboard.js"></script>
+  </head>
+  <body class="cashier-theme">
+    <nav>
+      <div class="sidebar">
+        <div class="logo">Tevxion Kasir</div>
+        <ul>
+          <li>
+            <a href="#"><i class="bx bxs-dashboard"></i> Dashboard</a>
+          </li>
+          <li>
+            <a href="#"><i class="bx bx-cart"></i> Sales</a>
+          </li>
+          <li>
+            <a href="#"><i class="bx bx-money"></i> Transactions</a>
+          </li>
+          <li>
+            <a href="#"><i class="bx bx-history"></i> History</a>
+          </li>
+          <li>
+            <a href="#" onclick="logout()"
+              ><i class="bx bx-log-out"></i> Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div class="main-content">
+        <h1>Cashier Dashboard</h1>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Today's Sales</h3>
+            <p>Rp 12,345,678</p>
+          </div>
+          <div class="stat-card">
+            <h3>Transactions</h3>
+            <p>145</p>
+          </div>
+          <div class="stat-card">
+            <h3>Pending Orders</h3>
+            <p>23</p>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </body>
+</html>

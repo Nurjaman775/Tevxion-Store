@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Tevxion</title>
+    <link rel="stylesheet" href="dashboard.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="dashboard.js"></script>
+  </head>
+  <body class="admin-theme">
+    <nav>
+      <div class="sidebar">
+        <div class="logo">Tevxion Admin</div>
+        <ul>
+          <li>
+            <a href="#"><i class="bx bxs-dashboard"></i> Dashboard</a>
+          </li>
+          <li>
+            <a href="#"><i class="bx bx-user"></i> Users</a>
+          </li>
+          <li>
+            <a href="#"><i class="bx bx-package"></i> Products</a>
+          </li>
+          <li>
+            <a href="#"><i class="bx bx-cog"></i> Settings</a>
+          </li>
+          <li>
+            <a href="#" onclick="logout()"
+              ><i class="bx bx-log-out"></i> Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div class="main-content">
+        <h1>Admin Dashboard</h1>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Total Users</h3>
+            <p>1,234</p>
+          </div>
+          <div class="stat-card">
+            <h3>Total Products</h3>
+            <p>567</p>
+          </div>
+          <div class="stat-card">
+            <h3>Revenue</h3>
+            <p>Rp 89,123,456</p>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </body>
+</html>
