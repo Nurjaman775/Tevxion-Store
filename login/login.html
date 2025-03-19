@@ -34,12 +34,13 @@
   <body>
     <div class="box">
       <div class="out">
-        <a href="/web/index.html"><i class="bx bx-undo"></i></a>
+        <a href="/web/index.html" title="Return to home page"><i class="bx bx-undo"></i></a>
       </div>
       <span class="borderLine"></span>
       <form id="loginForm" onsubmit="return handleLogin(event)">
         <h2>Login</h2>
         <div class="inputBox">
+          <label for="username"></label>
           <input
             type="text"
             name="username"
@@ -47,28 +48,35 @@
             autocomplete="on"
             required
             autofocus
+            placeholder=""
+            title="Enter your username"
           />
           <span>Username</span>
           <i></i>
         </div>
         <div class="inputBox">
+          <label for="password"></label>
           <input
             type="password"
             name="password"
             id="password"
             autocomplete="on"
             required
+            placeholder=""
+            title="Enter your password"
           />
           <span>Password</span>
           <i></i>
         </div>
         <div class="links">
-          <a href="#">Forgot Password</a>
-          <a href="/register/register.html">Register</a>
+          <a href="#" title="Reset your password">Forgot Password</a>
+          <a href="/register/register.html" title="Create new account">Register</a>
         </div>
-        <input type="submit" value="Login" />
+
+        <input type="submit" value="Login" title="Click to login" />
         <div class="google-signin">
-          <button type="button" id="googleSignIn">
+
+          <button type="button" id="googleSignIn" title="Sign in with Google">
             <img
               src="https://developers.google.com/identity/images/g-logo.png"
               alt="Google logo"

@@ -27,9 +27,9 @@
     <header>
       <h1>Toko Tevxion</h1>
       <div class="header-icons">
-        <a href="/web/index.html" class="back-btn"
-          ><i class="fas fa-arrow-left"></i> Kembali</a
-        >
+        <a href="../web/index.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i> Kembali
+        </a>
         <div class="cart-container">
           <i class="fas fa-shopping-cart"></i>
           <span class="cart-count">0</span>
@@ -42,14 +42,14 @@
         <i class="fas fa-search"></i>
       </div>
       <div class="filter-controls">
-        <select id="sortBy">
+        <select id="sortBy" title="Urutkan Produk">
           <option value="">Urutkan Berdasarkan</option>
           <option value="priceAsc">Harga: Rendah ke Tinggi</option>
           <option value="priceDesc">Harga: Tinggi ke Rendah</option>
           <option value="dateDesc">Terbaru</option>
           <option value="dateAsc">Terlama</option>
         </select>
-        <select id="filterCategory">
+        <select id="filterCategory" title="Filter Kategori">
           <option value="">Semua Kategori</option>
           <option value="laptop">Laptop</option>
           <option value="pc">PC</option>
@@ -60,19 +60,19 @@
     <main>
       <div class="products-container">
         <div class="product-card">
-          <img src="/img/Laptop.jpg" height="100" width="100" alt="Laptop" />
+          <img src="../img/Laptop.jpg" height="100" width="100" alt="Laptop" />
           <h3>Laptop Gaming</h3>
           <p class="price">Rp 15.999.000</p>
           <div class="button-group">
-            <button class="cart-btn"><i class="fas fa-cart-plus"></i></button>
-            <button class="buy-btn">
+            <button class="cart-btn" title="Tambah ke Keranjang"><i class="fas fa-cart-plus"></i></button>
+            <button class="buy-btn" title="Beli Sekarang">
               <i class="fas fa-shopping-bag"></i> Beli
             </button>
           </div>
         </div>
         <div class="product-card">
           <img
-            src="/img/PC Gaming.jpg"
+            src="../img/PC Gaming.jpg"
             height="100"
             width="100"
             alt="Pcgaming"
@@ -80,8 +80,8 @@
           <h3>Pc Gaming</h3>
           <p class="price">Rp 55.999.000</p>
           <div class="button-group">
-            <button class="cart-btn"><i class="fas fa-cart-plus"></i></button>
-            <button class="buy-btn">
+            <button class="cart-btn" title="Tambah ke Keranjang"><i class="fas fa-cart-plus"></i></button>
+            <button class="buy-btn" title="Beli Sekarang">
               <i class="fas fa-shopping-bag"></i> Beli
             </button>
           </div>
@@ -90,7 +90,7 @@
         <!-- Produk 3 -->
         <div class="product-card">
           <img
-            src="/img/Handphone.jpg"
+            src="../img/Handphone.jpg"
             width="100"
             height="100"
             alt="Headphone"
@@ -98,8 +98,8 @@
           <h3>Headphone</h3>
           <p class="price">Rp 18.000.000</p>
           <div class="button-group">
-            <button class="cart-btn"><i class="fas fa-cart-plus"></i></button>
-            <button class="buy-btn">
+            <button class="cart-btn" title="Tambah ke Keranjang"><i class="fas fa-cart-plus"></i></button>
+            <button class="buy-btn" title="Beli Sekarang">
               <i class="fas fa-shopping-bag"></i> Beli
             </button>
           </div>
@@ -121,7 +121,7 @@
             <h2>TEVXION STORE</h2>
             <p>Jl. Teknologi No. 123</p>
             <p>Telp: (021) 555-0123</p>
-            <hr>
+            <hr />
             <p class="receipt-date"></p>
           </div>
           <div class="receipt-items">
@@ -135,14 +135,12 @@
             <p>Barang yang sudah dibeli tidak dapat dikembalikan</p>
           </div>
         </div>
-        <button class="print-btn" onclick="printReceipt()">
+        <button class="print-btn" onclick="printReceipt()" title="Cetak Struk">
           <i class="fas fa-print"></i> Print
         </button>
-        <button class="close-btn" onclick="closeReceipt()">
+        <button class="close-btn" onclick="closeReceipt()" title="Tutup">
           <i class="fas fa-times"></i> Close
         </button>
       </div>
-    </div>
-    <script src="script.js"></script>
-  </body>
+    </div>    <script src="script.js"></script>  </body>
 </html>

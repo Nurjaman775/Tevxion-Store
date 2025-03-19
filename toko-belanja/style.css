@@ -75,13 +75,14 @@ header {
   border-radius: 15px;
   padding: 1.5rem;
   text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: all 0.3s ease;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  border-color: #45f3ff;
 }
 
 .product-card img {
@@ -429,14 +430,19 @@ header {
 }
 
 .product-image {
-  height: 200px;
-  margin-bottom: 1rem;
+  height: 220px;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(35, 36, 38, 0.6);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
-  background: #232426;
-  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.product-image:hover {
+  background: rgba(35, 36, 38, 0.8);
 }
 
 .product-image img {
@@ -450,23 +456,28 @@ header {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 2rem;
+  margin: 2rem 0;
   padding: 1rem;
+  background: #1c1c1c;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .page-btn {
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1.2rem;
   border: 1px solid rgba(69, 243, 255, 0.2);
-  background: #1c1c1c;
+  background: #232426;
   color: white;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  margin: 0 4px;
 }
 
 .page-btn:hover:not(:disabled) {
   background: #45f3ff;
   color: #232426;
+  transform: translateY(-2px);
 }
 
 .page-btn.active {

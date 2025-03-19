@@ -34,12 +34,13 @@
   <body>
     <div class="box">
       <div class="out">
-        <a href="/web/index.html"><i class="bx bx-undo"></i></a>
+        <a href="/web/index.html" title="Go back"><i class="bx bx-undo"></i></a>
       </div>
       <span class="borderLine"></span>
       <form id="registerForm" onsubmit="return handleRegister(event)">
         <h2>Register</h2>
         <div class="inputBox">
+          <label for="fullName"></label>
           <input
             type="text"
             id="fullName"
@@ -47,55 +48,85 @@
             autocomplete="on"
             required
             autofocus
+            placeholder=""
+            title="Enter your full name"
           />
           <span>Full Name</span>
           <i></i>
         </div>
         <div class="inputBox">
+          <label for="username"></label>
           <input
             type="text"
             id="username"
             name="username"
             autocomplete="on"
             required
+            placeholder=""
+            title="Enter your username"
           />
           <span>Username</span>
           <i></i>
         </div>
         <div class="inputBox">
+          <label for="whatsapp"></label>
           <input
             type="text"
             id="whatsapp"
             name="whatsapp"
             autocomplete="on"
             required
+            placeholder=""
+            title="Enter your WhatsApp number"
           />
           <span>WhatsApp Number</span>
           <i></i>
         </div>
         <div class="inputBox">
-          <input type="email" name="email" autocomplete="on" required />
+          <label for="email"></label>
+          <input 
+            type="email" 
+            id="email"
+            name="email" 
+            autocomplete="on" 
+            required 
+            placeholder=""
+            title="Enter your email"
+          />
           <span>Email</span>
           <i></i>
         </div>
         <div class="inputBox">
-          <input type="password" name="password" autocomplete="on" required />
+          <label for="password"></label>
+          <input 
+            type="password" 
+            id="password"
+            name="password" 
+            autocomplete="on" 
+            required 
+            placeholder=""
+            title="Enter your password"
+          />
           <span>Password</span>
           <i></i>
         </div>
         <div class="inputBox">
+          <label for="confirm_password"></label>
           <input
             type="password"
+            id="confirm_password"
             name="confirm_password"
             autocomplete="on"
             required
+            placeholder=""
+            title="Confirm your password"
           />
           <span>Confirm Password</span>
           <i></i>
         </div>
         <div class="links">
-          <a href="#">Already have an account?</a>
-          <a href="/login/login.html">Login</a>
+          <a href="#" title="Already have an account">Already have an account?</a>
+          <a href="/login/login.html" title="Go to login">Login</a>
         </div>
         <input type="submit" value="Register" />
       </form>

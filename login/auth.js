@@ -36,19 +36,13 @@ function handleLogin(event) {
     // Redirect based on role
     switch (user.role) {
       case "admin":
-        window.location.href = "/dashboard/admin.html";
+        window.location.href = "../dashboard/admin.html";
         break;
       case "cashier":
-        window.location.href = "/dashboard/cashier.html";
+        window.location.href = "../dashboard/cashier.html";
         break;
       case "customer":
-        // Check if there's a cart to return to
-        const cart = sessionStorage.getItem("cart");
-        if (cart && JSON.parse(cart).length > 0) {
-          window.location.href = "/toko-belanja/index.html";
-        } else {
-          window.location.href = "/toko-belanja/index.html";
-        }
+        window.location.href = "../toko-belanja/index.html";
         break;
     }
   } else {
