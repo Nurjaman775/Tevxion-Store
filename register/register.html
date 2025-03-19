@@ -40,96 +40,85 @@
       <form id="registerForm" onsubmit="return handleRegister(event)">
         <h2>Register</h2>
         <div class="inputBox">
-          <label for="fullName"></label>
           <input
             type="text"
             id="fullName"
             name="fullName"
-            autocomplete="on"
             required
             autofocus
-            placeholder=""
             title="Enter your full name"
+            placeholder=""
           />
           <span>Full Name</span>
           <i></i>
         </div>
         <div class="inputBox">
-          <label for="username"></label>
           <input
             type="text"
             id="username"
             name="username"
-            autocomplete="on"
             required
-            placeholder=""
             title="Enter your username"
+            placeholder=""
           />
           <span>Username</span>
           <i></i>
         </div>
         <div class="inputBox">
-          <label for="whatsapp"></label>
           <input
             type="text"
             id="whatsapp"
             name="whatsapp"
-            autocomplete="on"
             required
-            placeholder=""
             title="Enter your WhatsApp number"
+            placeholder=""
           />
           <span>WhatsApp Number</span>
           <i></i>
         </div>
         <div class="inputBox">
-          <label for="email"></label>
-          <input 
-            type="email" 
+          <input
+            type="email"
             id="email"
-            name="email" 
-            autocomplete="on" 
-            required 
+            name="email"
+            required
+            title="Enter your email address"
             placeholder=""
-            title="Enter your email"
           />
           <span>Email</span>
           <i></i>
         </div>
         <div class="inputBox">
-          <label for="password"></label>
-          <input 
-            type="password" 
+          <input
+            type="password"
             id="password"
-            name="password" 
-            autocomplete="on" 
-            required 
-            placeholder=""
+            name="password"
+            required
             title="Enter your password"
+            placeholder=""
           />
           <span>Password</span>
           <i></i>
         </div>
         <div class="inputBox">
-          <label for="confirm_password"></label>
           <input
             type="password"
             id="confirm_password"
             name="confirm_password"
-            autocomplete="on"
             required
-            placeholder=""
             title="Confirm your password"
+            placeholder=""
           />
           <span>Confirm Password</span>
           <i></i>
         </div>
         <div class="links">
-          <a href="#" title="Already have an account">Already have an account?</a>
+          <a href="#" title="Already have an account"
+            >Already have an account?</a
+          >
           <a href="/login/login.html" title="Go to login">Login</a>
         </div>
-        <input type="submit" value="Register" />
+        <input type="submit" value="Register" title="Click to register" />
       </form>
-    </div>
-  </body>
+    </div>  </body>
 </html>

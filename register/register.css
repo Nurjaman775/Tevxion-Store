@@ -17,8 +17,8 @@ body {
 
 .box {
   position: relative;
-  width: 389px;
-  height: 620px;
+  width: 388px;
+  height: 680px; /* Increased height for more inputs */
   background: #1c1c1c;
   border-radius: 12px;
   overflow: hidden;
@@ -127,11 +127,12 @@ body {
   position: absolute;
   inset: 4px;
   background: #222;
-  padding: 50px 40px;
+  padding: 40px 30px;
   border-radius: 8px;
   z-index: 2;
   display: flex;
   flex-direction: column;
+  gap: 15px; /* Added gap between elements */
 }
 
 .box form h2 {
@@ -144,17 +145,18 @@ body {
 .box form .inputBox {
   position: relative;
   width: 100%;
-  margin-top: 25px;
+  margin-top: 20px;
 }
 
 .box form .inputBox input {
+  position: relative;
   width: 100%;
   padding: 15px 10px 10px;
   background: transparent;
   border: none;
   outline: none;
-  color: #fff;
-  font-size: 0.9em;
+  color: #fff; /* Changed text color to white */
+  font-size: 1em;
   letter-spacing: 0.05em;
   transition: 0.5s;
   z-index: 10;
@@ -163,19 +165,19 @@ body {
 .box form .inputBox span {
   position: absolute;
   left: 0;
-  padding: 20px 0px 10px;
+  padding: 15px 0px 10px;
   pointer-events: none;
   color: #8f8f8f;
-  font-size: 1em;
+  font-size: 0.9em;
   letter-spacing: 0.05em;
   transition: 0.5s;
 }
 
 .box form .inputBox input:valid ~ span,
 .box form .inputBox input:focus ~ span {
-  color: #fff;
+  color: #45f3ff;
   font-size: 0.75em;
-  transform: translateY(-34px);
+  transform: translateY(-28px);
 }
 
 .box form .inputBox i {
@@ -184,50 +186,62 @@ body {
   bottom: 0;
   width: 100%;
   height: 2px;
-  background: #fff;
+  background: #45f3ff;
   border-radius: 4px;
-  overflow: hidden;
   transition: 0.5s;
   pointer-events: none;
+  opacity: 0.5;
 }
 
 .box form .inputBox input:valid ~ i,
 .box form .inputBox input:focus ~ i {
-  height: 44px;
+  height: 35px;
+  opacity: 0.1;
+}
+
+input::placeholder {
+  color: rgba(0, 0, 0, 0);
+  opacity: 0.5;
 }
 
 .box form .links {
   display: flex;
   justify-content: space-between;
+  margin-top: 10px;
 }
 
 .box form .links a {
-  margin: 10px 0;
-  font-size: 0.75em;
+  font-size: 0.85em;
   color: #8f8f8f;
   text-decoration: none;
+  transition: color 0.3s ease;
 }
 
-.box form .links a:hover,
-.box form .links a:nth-child(2) {
-  color: #fff;
+.box form .links a:hover {
+  color: #45f3ff;
 }
 
 .box form .inputBox input[type="submit"] {
   border: none;
   outline: none;
-  padding: 9px 25px;
-  background: #fff;
-  cursor: pointer;
-  font-size: 0.9em;
+  background: #45f3ff;
+  padding: 11px 25px;
+  width: 100%;
+  margin-top: 10px;
   border-radius: 4px;
   font-weight: 600;
-  width: 100px;
-  margin-top: 10px;
+  cursor: pointer;
+  color: #1c1c1c;
+  transition: all 0.3s ease;
+}
+
+.box form input[type="submit"]:hover {
+  background: #7ff8ff;
+  transform: translateY(-2px);
 }
 
 .box form input[type="submit"]:active {
-  opacity: 0.8;
+  transform: translateY(0);
 }
 
 .box .out {
@@ -260,21 +274,28 @@ body {
 }
 
 .error-message {
+  color: #ff2770;
+  font-size: 0.75em;
+  margin-top: 5px;
   position: absolute;
   bottom: -20px;
   left: 0;
-  font-size: 0.75em;
-  color: #ff2770;
+  transition: all 0.3s ease;
 }
 
 @media (max-width: 480px) {
   .box {
     width: 95%;
-    height: auto;
+    height: 720px;
+    margin: 20px;
   }
 
   .box form {
     padding: 30px 20px;
+  }
+
+  .box form h2 {
+    font-size: 1.5em;
   }
 }
 
@@ -284,4 +305,13 @@ body {
   }
 }
 
+/* Add responsive font sizes */
+@media screen and (max-width: 320px) {
+  .box form .inputBox span {
+    font-size: 0.85em;
+  }
 
+  .box form .inputBox input {
+    font-size: 0.9em;
+  }
+}

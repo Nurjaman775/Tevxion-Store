@@ -1,11 +1,14 @@
 function validateName(name) {
-  // Check if name contains only letters and spaces
+  // Empty check
+  if (!name.trim()) return "Nama tidak boleh kosong";
+
+  // Only letters and spaces
   const nameRegex = /^[A-Za-z\s]+$/;
   if (!nameRegex.test(name)) {
-    return "Name can only contain letters and spaces";
+    return "Nama hanya boleh mengandung huruf (a-z) dan spasi";
   }
 
-  // Check proper case (each word should start with capital letter)
+  // Proper case validation (each word must start with capital letter)
   const words = name.split(" ");
   const properCase = words.every(
     (word) =>
@@ -15,43 +18,95 @@ function validateName(name) {
   );
 
   if (!properCase) {
-    return "Name must be in proper case (e.g., John Doe)";
+    return "Gunakan format Proper Case (contoh: John Doe)";
   }
 
   return "";
 }
 
 function validateUsername(username) {
+  if (!username.trim()) return "Username tidak boleh kosong";
+
   const usernameRegex = /^[a-z0-9]{3,20}$/;
   if (!usernameRegex.test(username)) {
-    return "Username must be 3-20 characters long and contain only lowercase letters and numbers";
+    return "Username hanya boleh mengandung huruf kecil dan angka (3-20 karakter)";
   }
   return "";
 }
 
 function validatePassword(password) {
+  if (!password) return "Password tidak boleh kosong";
   if (password.length < 6 || password.length > 20) {
-    return "Password must be 6-20 characters long";
+    return "Password harus antara 6-20 karakter";
   }
 
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasNumber = /[0-9]/.test(password);
-
-  if (!hasUpperCase || !hasLowerCase || !hasNumber) {
-    return "Password must contain at least one uppercase letter, one lowercase letter, and one number";
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+  if (!passwordRegex.test(password)) {
+    return "Password harus mengandung minimal 1 huruf besar, 1 huruf kecil, dan 1 angka";
   }
 
   return "";
 }
 
 function validateWhatsApp(whatsapp) {
-  const whatsappRegex = /^628[0-9]{9,12}$/;
+  if (!whatsapp.trim()) return "Nomor WhatsApp tidak boleh kosong";
+
+  const whatsappRegex = /^628[0-9]{8,11}$/;
   if (!whatsappRegex.test(whatsapp)) {
-    return "WhatsApp number must start with 628 and be 11-14 digits long";
+    return "Nomor WhatsApp harus diawali 628 dan berisi 11-14 digit angka";
   }
   return "";
 }
+
+function validateConfirmPassword(confirmPassword) {
+  const password = document.getElementById("password").value;
+  if (confirmPassword.trim() === "") return "";
+
+  if (confirmPassword !== password) {
+    return "Password tidak cocok!";
+  }
+  return "";
+}
+
+// Tampilkan error pada masing-masing input
+function showError(inputId, message) {
+  const input = document.getElementById(inputId);
+  const errorDiv =
+    input.parentElement.querySelector(".error-message") ||
+    document.createElement("div");
+
+  errorDiv.className = "error-message";
+  errorDiv.textContent = message;
+
+  if (!input.parentElement.querySelector(".error-message")) {
+    input.parentElement.appendChild(errorDiv);
+  }
+
+  input.style.borderColor = message ? "#ff2770" : "#45f3ff";
+  errorDiv.style.display = message ? "block" : "none";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Objek input beserta fungsi validasinya
+  const inputs = {
+    fullName: { validate: validateName },
+    username: { validate: validateUsername },
+    whatsapp: { validate: validateWhatsApp },
+    password: { validate: validatePassword },
+    confirm_password: { validate: validateConfirmPassword },
+  };
+
+  // Menambahkan event listener untuk validasi real-time
+  for (const [id, { validate }] of Object.entries(inputs)) {
+    const input = document.getElementById(id);
+    if (input) {
+      input.addEventListener("input", function () {
+        const error = validate(this.value);
+        showError(id, error);
+      });
+    }
+  }
+});
 
 function handleRegister(event) {
   event.preventDefault();
@@ -62,37 +117,45 @@ function handleRegister(event) {
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirm_password").value;
 
-  // Validate each field
+  // Validasi saat submit
   const nameError = validateName(fullName);
   if (nameError) {
-    alert(nameError);
+    showError("fullName", nameError);
     return false;
   }
 
   const usernameError = validateUsername(username);
   if (usernameError) {
-    alert(usernameError);
+    showError("username", usernameError);
     return false;
   }
 
   const whatsappError = validateWhatsApp(whatsapp);
   if (whatsappError) {
-    alert(whatsappError);
+    showError("whatsapp", whatsappError);
     return false;
   }
 
   const passwordError = validatePassword(password);
   if (passwordError) {
-    alert(passwordError);
+    showError("password", passwordError);
     return false;
   }
 
-  if (password !== confirmPassword) {
-    alert("Passwords do not match!");
+  const confirmPasswordError = validateConfirmPassword(confirmPassword);
+  if (confirmPasswordError) {
+    showError("confirm_password", confirmPasswordError);
     return false;
   }
 
-  // If all validations pass, create new user
+  // Cek apakah username sudah digunakan
+  const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+  if (existingUsers.some((user) => user.username === username)) {
+    showError("username", "Username sudah digunakan!");
+    return false;
+  }
+
+  // Simpan user baru dan alihkan ke halaman login
   const newUser = {
     fullName,
     username,
@@ -101,59 +164,9 @@ function handleRegister(event) {
     role: "customer",
   };
 
-  // Get existing users or initialize empty array
-  const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-
-  // Check if username already exists
-  if (existingUsers.some((user) => user.username === username)) {
-    alert("Username already exists!");
-    return false;
-  }
-
   existingUsers.push(newUser);
   localStorage.setItem("users", JSON.stringify(existingUsers));
-
-  alert("Registration successful! Please login to continue.");
-  window.location.href = "/login/login.html";
+  alert("Registrasi berhasil! Silakan login untuk melanjutkan.");
+  window.location.href = "../login/login.html";
   return false;
 }
-
-// Add real-time validation feedback
-document.addEventListener("DOMContentLoaded", function () {
-  const inputs = {
-    fullName: document.getElementById("fullName"),
-    username: document.getElementById("username"),
-    whatsapp: document.getElementById("whatsapp"),
-    password: document.getElementById("password"),
-  };
-
-  const validationFunctions = {
-    fullName: validateName,
-    username: validateUsername,
-    whatsapp: validateWhatsApp,
-    password: validatePassword,
-  };
-
-  for (const [field, input] of Object.entries(inputs)) {
-    input.addEventListener("input", function () {
-      const error = validationFunctions[field](this.value);
-      this.style.borderColor = error ? "#ff2770" : "#45f3ff";
-
-      // Remove previous error message if exists
-      const existingError = this.parentElement.querySelector(".error-message");
-      if (existingError) {
-        existingError.remove();
-      }
-
-      // Add new error message if validation fails
-      if (error) {
-        const errorElement = document.createElement("span");
-        errorElement.className = "error-message";
-        errorElement.textContent = error;
-        errorElement.style.color = "#ff2770";
-        errorElement.style.fontSize = "0.75em";
-        this.parentElement.appendChild(errorElement);
-      }
-    });
-  }
-});

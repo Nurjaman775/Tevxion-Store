@@ -16,6 +16,7 @@ function handleLogin(event) {
   const defaultUsers = [
     { username: "admin", password: "admin123", role: "admin" },
     { username: "kasir", password: "kasir123", role: "cashier" },
+    { username: "user", password: "user123", role: "customer" },
   ];
 
   const allUsers = [...defaultUsers, ...savedUsers];

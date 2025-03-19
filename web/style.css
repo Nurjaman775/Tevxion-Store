@@ -166,6 +166,57 @@ footer {
   color: #45f3ff;
 }
 
+.user-profile {
+  position: relative;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  background: rgba(69, 243, 255, 0.1);
+  border: 1px solid rgba(69, 243, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.user-profile:hover {
+  background: rgba(69, 243, 255, 0.2);
+}
+
+.username {
+  color: #45f3ff;
+  font-weight: 500;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #1c1c1c;
+  border-radius: 8px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  min-width: 150px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(69, 243, 255, 0.1);
+  display: none;
+  z-index: 100;
+}
+
+.user-profile:hover .profile-dropdown {
+  display: block;
+}
+
+.profile-dropdown a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.profile-dropdown a:hover {
+  background: rgba(69, 243, 255, 0.1);
+  color: #45f3ff;
+}
+
 @media (max-width: 480px) {
   .navbar {
     padding: 1rem 3%;
