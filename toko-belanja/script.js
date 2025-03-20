@@ -4,6 +4,7 @@ class ShopManager {
     this.cart = [];
     this.currentPage = 1;
     this.ITEMS_PER_PAGE = 10;
+    this.isCartOpen = false;  // Add this
 
     this.initializeElements();
     this.loadCart();
@@ -22,7 +23,10 @@ class ShopManager {
         name: item.title,
         price: Math.round(item.price * 15000),
         category: item.category,
-        date: new Date().toISOString(),
+        material: this.getRandomMaterial(), // Add material
+        date: new Date(
+          Date.now() - Math.random() * 1000 * 60 * 60 * 24 * 30
+        ).toISOString(), // Random date within last 30 days
         image: item.image,
         description: item.description,
         stock: 5,
@@ -37,6 +41,18 @@ class ShopManager {
     }
   }
 
+  getRandomMaterial() {
+    const materials = [
+      "Plastic",
+      "Metal",
+      "Glass",
+      "Carbon Fiber",
+      "Aluminum",
+      "Stainless Steel",
+    ];
+    return materials[Math.floor(Math.random() * materials.length)];
+  }
+
   initializeElements() {
     // Initialize DOM elements
     this.productsContainer = document.querySelector(".products-container");
@@ -48,18 +64,25 @@ class ShopManager {
     this.cartSticky = document.querySelector(".cart-sticky");
     this.cartIcon = this.cartSticky.querySelector(".cart-icon");
     this.loadCartFromCookies(); // Add this line
+    this.materialSelect = document.getElementById("materialSelect");
+    this.dateSelect = document.getElementById("dateSelect");
   }
 
   filterProducts() {
     let filtered = [...this.products];
-    const searchTerm = this.searchInput.value.toLowerCase();
-    const sortBy = this.sortSelect.value;
-    const category = this.categorySelect.value;
+    const searchTerm = this.searchInput?.value.toLowerCase() || "";
+    const sortBy = this.sortSelect?.value || "";
+    const category = this.categorySelect?.value || "";
+    const material = this.materialSelect?.value || "";
+    const dateRange = this.dateSelect?.value || "";
 
-    // Basic search filter
+    // Keyword search
     if (searchTerm) {
-      filtered = filtered.filter((product) =>
-        product.name.toLowerCase().includes(searchTerm)
+      filtered = filtered.filter(
+        (product) =>
+          product.name.toLowerCase().includes(searchTerm) ||
+          product.description.toLowerCase().includes(searchTerm) ||
+          product.material.toLowerCase().includes(searchTerm)
       );
     }
 
@@ -68,7 +91,20 @@ class ShopManager {
       filtered = filtered.filter((product) => product.category === category);
     }
 
-    // Basic sorting
+    // Material filter
+    if (material) {
+      filtered = filtered.filter((product) => product.material === material);
+    }
+
+    // Date range filter
+    if (dateRange) {
+      const now = new Date();
+      const days = parseInt(dateRange);
+      const cutoff = new Date(now - days * 24 * 60 * 60 * 1000);
+      filtered = filtered.filter((product) => new Date(product.date) >= cutoff);
+    }
+
+    // Sorting
     switch (sortBy) {
       case "priceAsc":
         filtered.sort((a, b) => a.price - b.price);
@@ -87,11 +123,17 @@ class ShopManager {
     this.filteredProducts = filtered;
     this.currentPage = 1;
     this.displayProducts();
+    this.updateFilterStats();
   }
 
   updateFilterStats() {
     const stats = document.getElementById("filterStats");
-    stats.textContent = `Menampilkan ${this.filteredProducts.length} dari ${this.products.length} produk`;
+    if (stats) {
+      const total = this.products.length;
+      const filtered = this.filteredProducts.length;
+      stats.textContent = `Menampilkan ${filtered} dari ${total} produk`;
+      stats.style.display = filtered < total ? "block" : "none";
+    }
   }
 
   updatePriceLabel() {
@@ -99,15 +141,58 @@ class ShopManager {
   }
 
   attachEventListeners() {
-    // Search and filter events
-    this.searchInput.addEventListener("input", () => this.filterProducts());
-    this.sortSelect.addEventListener("change", () => this.filterProducts());
-    this.categorySelect.addEventListener("change", () => this.filterProducts());
+    if (this.searchInput) {
+      this.searchInput.addEventListener("input", () => this.filterProducts());
+    }
+    if (this.sortSelect) {
+      this.sortSelect.addEventListener("change", () => this.filterProducts());
+    }
+    if (this.categorySelect) {
+      this.categorySelect.addEventListener("change", () =>
+        this.filterProducts()
+      );
+    }
+    if (this.materialSelect) {
+      this.materialSelect.addEventListener("change", () =>
+        this.filterProducts()
+      );
+    }
+    if (this.dateSelect) {
+      this.dateSelect.addEventListener("change", () => this.filterProducts());
+    }
 
-    // Cart events
-    this.cartSticky.addEventListener("click", () => {
-      if (this.cart.length > 0) this.handleCheckout();
-      else alert("Keranjang belanja kosong");
+    if (this.cartSticky) {
+      this.cartSticky.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.toggleCart();
+      });
+
+      // Close cart when clicking outside
+      document.addEventListener("click", (e) => {
+        if (this.isCartOpen && !e.target.closest(".cart-dropdown")) {
+          this.closeCart();
+        }
+      });
+    }
+
+    // Improve button feedback
+    document.querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        if (this.disabled) {
+          e.preventDefault();
+          return;
+        }
+
+        // Add visual feedback
+        this.classList.add("clicked");
+        setTimeout(() => this.classList.remove("clicked"), 200);
+
+        // Prevent double clicks
+        if (!this.classList.contains("quantity-btn")) {
+          this.disabled = true;
+          setTimeout(() => (this.disabled = false), 500);
+        }
+      });
     });
   }
 
@@ -144,6 +229,14 @@ class ShopManager {
       window.location.href = "../login/login.html";
       return;
     }
+
+    // Update product stock
+    this.cart.forEach(item => {
+      const product = this.products.find(p => p.id === item.id);
+      if (product) {
+        product.stock -= item.quantity;
+      }
+    });
 
     this.showReceipt();
   }
@@ -266,12 +359,18 @@ class ShopManager {
         const isOutOfStock = product.stock === 0;
 
         return `
-        <div class="product-card">
+        <div class="product-card" data-id="${product.id}">
           <div class="product-image">
             <img src="${product.image}" alt="${product.name}" loading="lazy">
           </div>
           <h3>${product.name}</h3>
           <p class="price">Rp ${product.price.toLocaleString()}</p>
+          <div class="product-details">
+            <p class="material">Material: ${product.material}</p>
+            <p class="date">Added: ${new Date(product.date).toLocaleDateString(
+              "id-ID"
+            )}</p>
+          </div>
           <p class="stock ${isOutOfStock ? "out-of-stock" : ""}">
             Stok: ${product.stock}
           </p>
@@ -285,28 +384,29 @@ class ShopManager {
             `
                 : isInCart
                 ? `
-              <div class="cart-controls">
-                <button class="cart-btn quantity-btn" onclick="shop.removeFromCart(${
+              <div class="cart-controls" data-id="${product.id}">
+                <button class="cart-btn quantity-btn minus-btn" data-id="${
                   product.id
-                })">
+                }">
                   <i class="fas fa-minus"></i>
                 </button>
                 <span class="quantity-display">${cartItem.quantity}</span>
-                <button class="cart-btn quantity-btn" 
-                  ${cartItem.quantity >= product.stock ? "disabled" : ""}
-                  onclick="shop.addToCart(${product.id})">
+                <button class="cart-btn quantity-btn plus-btn" data-id="${
+                  product.id
+                }" 
+                  ${cartItem.quantity >= product.stock ? "disabled" : ""}>
                   <i class="fas fa-plus"></i>
                 </button>
               </div>
             `
                 : `
-              <button class="cart-btn" onclick="shop.addToCart(${product.id})" 
+              <button class="cart-btn add-to-cart" data-id="${product.id}" 
                 title="Tambah ke Keranjang">
                 <i class="fas fa-cart-plus"></i>
               </button>
             `
             }
-            <button class="buy-btn" onclick="shop.handleBuyNow(${product.id})"
+            <button class="buy-btn" data-id="${product.id}"
               ${isOutOfStock ? "disabled" : ""}>
               <i class="fas fa-shopping-bag"></i> Beli
             </button>
@@ -474,42 +574,48 @@ class ShopManager {
   }
 
   attachProductListeners() {
-    // Fix cart button functionality
-    const cartButtons = document.querySelectorAll(".cart-btn:not(.disabled)");
-    cartButtons.forEach((btn) => {
+    // Add to cart buttons
+    document.querySelectorAll(".add-to-cart").forEach((btn) => {
       btn.onclick = (e) => {
         e.preventDefault();
-        e.stopPropagation();
-        const productId = parseInt(btn.getAttribute("data-id"));
+        const productId = parseInt(e.currentTarget.dataset.id);
         this.addToCart(productId);
       };
     });
 
-    // Fix buy button functionality
-    const buyButtons = document.querySelectorAll(".buy-btn:not(:disabled)");
-    buyButtons.forEach((btn) => {
+    // Buy buttons
+    document.querySelectorAll(".buy-btn").forEach((btn) => {
       btn.onclick = (e) => {
         e.preventDefault();
-        e.stopPropagation();
-        const productId = parseInt(btn.getAttribute("data-id"));
+        const productId = parseInt(e.currentTarget.dataset.id);
         this.handleBuyNow(productId);
       };
     });
 
-    // Add quantity control listeners
-    const quantityControls = document.querySelectorAll(".cart-controls");
-    quantityControls.forEach((control) => {
-      const minusBtn = control.querySelector(".quantity-btn:first-child");
-      const plusBtn = control.querySelector(".quantity-btn:last-child");
-      const productId = parseInt(minusBtn.parentElement.dataset.id);
-
-      if (minusBtn) {
-        minusBtn.onclick = () => this.removeFromCart(productId);
-      }
-      if (plusBtn) {
-        plusBtn.onclick = () => this.addToCart(productId);
-      }
+    // Quantity controls
+    document.querySelectorAll(".minus-btn").forEach((btn) => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        const productId = parseInt(e.currentTarget.dataset.id);
+        this.removeFromCart(productId);
+      };
     });
+
+    document.querySelectorAll(".plus-btn").forEach((btn) => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        const productId = parseInt(e.currentTarget.dataset.id);
+        this.addToCart(productId);
+      };
+    });
+
+    // Filter controls
+    document
+      .getElementById("materialSelect")
+      ?.addEventListener("change", () => this.filterProducts());
+    document
+      .getElementById("dateSelect")
+      ?.addEventListener("change", () => this.filterProducts());
   }
 
   handleBuyNow(productId) {
@@ -544,6 +650,76 @@ class ShopManager {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(";").shift();
+  }
+
+  // Add loading state handling
+  showLoading(button) {
+    button.dataset.originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    button.disabled = true;
+  }
+
+  hideLoading(button) {
+    button.innerHTML = button.dataset.originalText;
+    button.disabled = false;
+  }
+
+  toggleCart() {
+    if (this.cart.length === 0) {
+      alert("Keranjang belanja kosong");
+      return;
+    }
+    
+    if (!this.isCartOpen) {
+      this.showCartDropdown();
+    } else {
+      this.closeCart();
+    }
+  }
+
+  showCartDropdown() {
+    let cartDropdown = document.querySelector(".cart-dropdown");
+    if (!cartDropdown) {
+      cartDropdown = document.createElement("div");
+      cartDropdown.className = "cart-dropdown";
+      document.body.appendChild(cartDropdown);
+    }
+
+    cartDropdown.innerHTML = `
+      <div class="cart-header">
+        <h3>Keranjang Belanja</h3>
+        <span>${this.cart.length} item</span>
+      </div>
+      <div class="cart-items">
+        ${this.cart.map(item => `
+          <div class="cart-item">
+            <img src="${this.products.find(p => p.id === item.id)?.image}" alt="${item.name}">
+            <div class="cart-item-details">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-price">
+                ${item.quantity}x Rp ${item.price.toLocaleString("id-ID")}
+              </div>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div class="cart-actions">
+        <button class="btn-cancel" onclick="shop.closeCart()">Batal</button>
+        <button class="btn-checkout" onclick="shop.handleCheckout()">Checkout</button>
+      </div>
+    `;
+
+    setTimeout(() => cartDropdown.classList.add("show"), 10);
+    this.isCartOpen = true;
+  }
+
+  closeCart() {
+    const cartDropdown = document.querySelector(".cart-dropdown");
+    if (cartDropdown) {
+      cartDropdown.classList.remove("show");
+      setTimeout(() => cartDropdown.remove(), 300);
+    }
+    this.isCartOpen = false;
   }
 }
 

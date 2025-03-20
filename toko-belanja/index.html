@@ -13,7 +13,7 @@
     />
     <link rel="icon" href="/Cookie2/img/favicon.ico" type="image/x-icon" />
     <title>Tevxion - Belanja</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="./style.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -52,66 +52,129 @@
 
         <select id="filterCategory" title="Filter Kategori">
           <option value="">Semua Kategori</option>
-          <option value="laptop">Laptop</option>
-          <option value="smartphone">Smartphone</option>
-          <option value="accessories">Aksesoris</option>
+          <option value="men's clothing">Pakaian Pria</option>
+          <option value="women's clothing">Pakaian Wanita</option>
+          <option value="jewelery">Perhiasan</option>
+          <option value="electronics">Elektronik</option>
+        </select>
+
+        <select id="materialSelect" title="Filter Material">
+          <option value="">Semua Material</option>
+          <option value="Plastic">Plastik</option>
+          <option value="Metal">Metal</option>
+          <option value="Glass">Kaca</option>
+          <option value="Carbon Fiber">Carbon Fiber</option>
+          <option value="Aluminum">Aluminum</option>
+          <option value="Stainless Steel">Stainless Steel</option>
+        </select>
+
+        <select id="dateSelect" title="Filter Tanggal">
+          <option value="">Semua Waktu</option>
+          <option value="7">7 Hari Terakhir</option>
+          <option value="14">14 Hari Terakhir</option>
+          <option value="30">30 Hari Terakhir</option>
         </select>
       </div>
+      <div id="filterStats" class="filter-stats"></div>
     </div>
     <main>
       <div class="products-container">
+        <!-- Static products for demo/fallback -->
         <div class="product-card">
-          <img src="../img/Laptop.jpg" height="100" width="100" alt="Laptop" />
+          <div class="product-image">
+            <img
+              src="../img/Laptop.jpg"
+              alt="Laptop"
+              loading="lazy"
+              width="200"
+              height="200"
+              onerror="this.src='../img/placeholder.jpg'"
+            />
+          </div>
           <h3>Laptop Gaming</h3>
           <p class="price">Rp 15.999.000</p>
+          <div class="product-details">
+            <p class="material">Material: Metal</p>
+            <p class="date">Added: 2024-02-20</p>
+          </div>
+          <p class="stock">Stok: 5</p>
           <div class="button-group">
-            <button class="cart-btn" title="Tambah ke Keranjang">
+            <button
+              class="cart-btn add-to-cart"
+              data-id="1"
+              title="Tambah ke Keranjang"
+            >
               <i class="fas fa-cart-plus"></i>
             </button>
-            <button class="buy-btn" title="Beli Sekarang">
+            <button class="buy-btn" data-id="1">
               <i class="fas fa-shopping-bag"></i> Beli
             </button>
           </div>
         </div>
+
         <div class="product-card">
-          <img
-            src="../img/PC Gaming.jpg"
-            height="100"
-            width="100"
-            alt="Pcgaming"
-          />
-          <h3>Pc Gaming</h3>
+          <div class="product-image">
+            <img
+              src="../img/PC Gaming.jpg"
+              alt="PC Gaming"
+              loading="lazy"
+              width="200"
+              height="200"
+              onerror="this.src='../img/placeholder.jpg'"
+            />
+          </div>
+          <h3>PC Gaming</h3>
           <p class="price">Rp 55.999.000</p>
+          <div class="product-details">
+            <p class="material">Material: Metal</p>
+            <p class="date">Added: 2024-02-19</p>
+          </div>
+          <p class="stock">Stok: 3</p>
           <div class="button-group">
-            <button class="cart-btn" title="Tambah ke Keranjang">
+            <button
+              class="cart-btn add-to-cart"
+              data-id="2"
+              title="Tambah ke Keranjang"
+            >
               <i class="fas fa-cart-plus"></i>
             </button>
-            <button class="buy-btn" title="Beli Sekarang">
+            <button class="buy-btn" data-id="2">
               <i class="fas fa-shopping-bag"></i> Beli
             </button>
           </div>
         </div>
-        <!-- Tambahkan 8 produk lainnya dengan struktur yang sama -->
-        <!-- Produk 3 -->
+
         <div class="product-card">
-          <img
-            src="../img/Handphone.jpg"
-            width="100"
-            height="100"
-            alt="Headphone"
-          />
+          <div class="product-image">
+            <img
+              src="../img/Handphone.jpg"
+              alt="Headphone"
+              loading="lazy"
+              width="200"
+              height="200"
+              onerror="this.src='../img/placeholder.jpg'"
+            />
+          </div>
           <h3>Headphone</h3>
           <p class="price">Rp 18.000.000</p>
+          <div class="product-details">
+            <p class="material">Material: Plastic</p>
+            <p class="date">Added: 2024-02-18</p>
+          </div>
+          <p class="stock">Stok: 8</p>
           <div class="button-group">
-            <button class="cart-btn" title="Tambah ke Keranjang">
+            <button
+              class="cart-btn add-to-cart"
+              data-id="3"
+              title="Tambah ke Keranjang"
+            >
               <i class="fas fa-cart-plus"></i>
             </button>
-            <button class="buy-btn" title="Beli Sekarang">
+            <button class="buy-btn" data-id="3">
               <i class="fas fa-shopping-bag"></i> Beli
             </button>
           </div>
         </div>
-        <!-- Produk 4-10 dengan struktur yang sama -->
       </div>
     </main>
     <div class="cart-sticky">

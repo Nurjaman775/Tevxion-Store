@@ -33,19 +33,26 @@
         </ul>
       </div>
       <div class="main-content">
-        <h1>Cashier Dashboard</h1>
+        <h1>Dashboard Kasir</h1>
         <div class="stats-grid">
           <div class="stat-card">
-            <h3>Today's Sales</h3>
-            <p>Rp 5,234,000</p>
+            <h3>Penjualan Hari Ini</h3>
+            <p>Rp <span id="todaySales">0</span></p>
           </div>
           <div class="stat-card">
-            <h3>Transactions</h3>
-            <p>42</p>
+            <h3>Total Transaksi</h3>
+            <p><span id="totalTransactions">0</span></p>
           </div>
           <div class="stat-card">
-            <h3>Pending Orders</h3>
-            <p>7</p>
+            <h3>Pesanan Pending</h3>
+            <p><span id="pendingOrders">0</span></p>
+          </div>
+        </div>
+
+        <div class="transactions-list">
+          <h2>Transaksi Terbaru</h2>
+          <div id="recentTransactions">
+            <!-- Transactions will be loaded here -->
           </div>
         </div>
       </div>

@@ -36,3 +36,33 @@ function logout() {
   sessionStorage.removeItem("currentUser");
   window.location.href = "../login/login.html";
 }
+
+function attachButtonListeners() {
+  // Logout button
+  document.querySelectorAll('[onclick="logout()"]').forEach((btn) => {
+    btn.onclick = (e) => {
+      e.preventDefault();
+      if (confirm("Are you sure you want to logout?")) {
+        logout();
+      }
+    };
+  });
+
+  // Navigation buttons
+  document.querySelectorAll(".sidebar a").forEach((link) => {
+    if (!link.hasAttribute("onclick")) {
+      link.onclick = (e) => {
+        const href = link.getAttribute("href");
+        if (href === "#") {
+          e.preventDefault();
+          alert("Feature coming soon!");
+        }
+      };
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  checkAuth();
+  attachButtonListeners();
+});

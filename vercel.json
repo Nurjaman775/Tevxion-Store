@@ -1,6 +1,15 @@
 {
   "version": 2,
-  "rewrites": [{ "source": "/(.*)", "destination": "/web/index.html" }],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/web/(.*)", "dest": "/web/$1" },
+    { "src": "/login/(.*)", "dest": "/login/$1" },
+    { "src": "/register/(.*)", "dest": "/register/$1" },
+    { "src": "/dashboard/(.*)", "dest": "/dashboard/$1" },
+    { "src": "/toko-belanja/(.*)", "dest": "/toko-belanja/$1" },
+    { "src": "/(.*)", "dest": "/web/index.html" }
+  ],
   "cleanUrls": true,
   "trailingSlash": false
 }

@@ -51,10 +51,23 @@ function validatePassword(password) {
 function validateWhatsApp(whatsapp) {
   if (!whatsapp.trim()) return "Nomor WhatsApp tidak boleh kosong";
 
+  // Clean the number and convert leading 0 to 62
+  let cleanNumber = whatsapp.trim();
+  if (cleanNumber.startsWith('0')) {
+    cleanNumber = '62' + cleanNumber.substring(1);
+  }
+  
+  // Update input field with converted number
+  const whatsappInput = document.getElementById('whatsapp');
+  if (whatsappInput) {
+    whatsappInput.value = cleanNumber;
+  }
+
   const whatsappRegex = /^628[0-9]{8,11}$/;
-  if (!whatsappRegex.test(whatsapp)) {
+  if (!whatsappRegex.test(cleanNumber)) {
     return "Nomor WhatsApp harus diawali 628 dan berisi 11-14 digit angka";
   }
+  
   return "";
 }
 
@@ -106,6 +119,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   }
+
+  enhanceFormButtons();
 });
 
 function handleRegister(event) {
@@ -169,4 +184,35 @@ function handleRegister(event) {
   alert("Registrasi berhasil! Silakan login untuk melanjutkan.");
   window.location.href = "../login/login.html";
   return false;
+}
+
+function enhanceFormButtons() {
+  const form = document.getElementById("registerForm");
+  if (!form) return;
+
+  // Enhance submit button
+  const submitBtn = form.querySelector('input[type="submit"]');
+  if (submitBtn) {
+    submitBtn.addEventListener("click", function (e) {
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        // Highlight invalid fields
+        Array.from(form.elements).forEach((el) => {
+          if (!el.checkValidity()) {
+            el.classList.add("invalid");
+          }
+        });
+        return;
+      }
+    });
+  }
+
+  // Add input validation feedback
+  form.querySelectorAll("input").forEach((input) => {
+    input.addEventListener("input", function () {
+      this.classList.remove("invalid");
+      const error = validateField(this);
+      showError(this.id, error);
+    });
+  });
 }
