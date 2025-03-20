@@ -1,3 +1,5 @@
+import config from "./config.js";
+
 // Mock user database
 const users = [
   { username: "admin", password: "admin123", role: "admin" },
@@ -52,37 +54,39 @@ function handleLogin(event) {
   return false;
 }
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBUxLj5zaO2nQFyumOqPyjQr7U0IgbZg3U",
-  authDomain: "tevxion-store.firebaseapp.com",
-  projectId: "tevxion-store",
-  storageBucket: "tevxion-store.firebasestorage.app",
-  messagingSenderId: "808872571173",
-  appId: "1:808872571173:web:555bb550726af3f5eceacc",
-  measurementId: "G-5191P7DRST",
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
 // Initialize Google Sign-In
 function initGoogleSignIn() {
-  const googleSignInBtn = document.getElementById("googleSignIn");
-  googleSignInBtn.addEventListener("click", handleGoogleSignIn);
+  google.accounts.id.initialize({
+    client_id: config.google.clientId,
+    callback: handleGoogleSignIn,
+    auto_select: false,
+    ux_mode: "popup",
+    context: "signin",
+    error_callback: (error) => {
+      console.error("Google Sign-In Error:", error);
+      alert("Failed to initialize Google Sign-In. Please try again.");
+    },
+  });
+
+  google.accounts.id.renderButton(document.getElementById("googleSignIn"), {
+    theme: "outline",
+    size: "large",
+  });
 }
 
 // Handle Google Sign-In
-async function handleGoogleSignIn() {
+async function handleGoogleSignIn(response) {
   try {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    const result = await firebase.auth().signInWithPopup(provider);
+    // Verify Google token and get user info
+    const { credential } = response;
+
+    // Create user object from Google data
     const user = {
-      username: result.user.email,
-      fullName: result.user.displayName,
-      email: result.user.email,
+      username: response.email,
+      fullName: response.name,
+      email: response.email,
       role: "customer",
-      googleId: result.user.uid,
+      googleId: response.sub,
     };
 
     // Store user in local storage
@@ -95,13 +99,26 @@ async function handleGoogleSignIn() {
     // Set session
     sessionStorage.setItem("currentUser", JSON.stringify(user));
 
-    // Redirect to products page
-    window.location.href = "../toko-belanja/index.html";
+    // Redirect based on return URL or to products page
+    const returnUrl = sessionStorage.getItem("returnUrl");
+    if (returnUrl) {
+      sessionStorage.removeItem("returnUrl");
+      window.location.href = returnUrl;
+    } else {
+      window.location.href = "/toko-belanja/index.html";
+    }
   } catch (error) {
     console.error("Error during Google sign-in:", error);
     alert("Failed to sign in with Google. Please try again.");
   }
 }
 
-// Initialize when document is loaded
-document.addEventListener("DOMContentLoaded", initGoogleSignIn);
+// Add Google Sign-In script
+document.addEventListener("DOMContentLoaded", function () {
+  const script = document.createElement("script");
+  script.src = "https://accounts.google.com/gsi/client";
+  script.async = true;
+  script.defer = true;
+  script.onload = initGoogleSignIn;
+  document.head.appendChild(script);
+});
