@@ -1,15 +1,14 @@
 {
   "version": 2,
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/assets/(.*)", "dest": "/assets/$1" },
-    { "src": "/web/(.*)", "dest": "/web/$1" },
-    { "src": "/login/(.*)", "dest": "/login/$1" },
-    { "src": "/register/(.*)", "dest": "/register/$1" },
-    { "src": "/dashboard/(.*)", "dest": "/dashboard/$1" },
-    { "src": "/toko-belanja/(.*)", "dest": "/toko-belanja/$1" },
-    { "src": "/(.*)", "dest": "/web/index.html" }
-  ],
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/assets/:path*", "destination": "/assets/:path*" },
+    { "source": "/web/:path*", "destination": "/web/:path*" },
+    { "source": "/login/:path*", "destination": "/login/:path*" },
+    { "source": "/register/:path*", "destination": "/register/:path*" },
+    { "source": "/dashboard/:path*", "destination": "/dashboard/:path*" },
+    { "source": "/toko-belanja/:path*", "destination": "/toko-belanja/:path*" },
+    { "source": "/(.*)", "destination": "/web/index.html" }
+  ]
 }

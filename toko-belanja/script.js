@@ -1,10 +1,55 @@
+/**
+ * Manages the entire shopping experience for an e-commerce application.
+ * Handles product fetching, filtering, cart management, and checkout processes.
+ *
+ * @class
+ * @property {Array} products - List of all available products
+ * @property {Array} cart - Current items in the user's shopping cart
+ * @property {number} currentPage - Current page number for product pagination
+ * @property {number} ITEMS_PER_PAGE - Number of products displayed per page
+ * @property {boolean} isCartOpen - Tracks whether the cart dropdown is currently open
+ */
 class ShopManager {
   constructor() {
     this.products = [];
+    this.apiProducts = []; // Add new property for API products
     this.cart = [];
     this.currentPage = 1;
     this.ITEMS_PER_PAGE = 10;
-    this.isCartOpen = false;  // Add this
+    this.isCartOpen = false; // Add this
+
+    this.staticProducts = [
+      {
+        id: "static_1",
+        name: "Laptop Gaming",
+        price: 15999000,
+        material: "Metal",
+        date: "2024-02-20",
+        image: "../img/Laptop.jpg",
+        description: "High-performance gaming laptop",
+        stock: 5,
+      },
+      {
+        id: "static_2",
+        name: "PC Gaming",
+        price: 55999000,
+        material: "Metal",
+        date: "2024-02-19",
+        image: "../img/PC Gaming.jpg",
+        description: "Custom built gaming PC",
+        stock: 10,
+      },
+      {
+        id: "static_3",
+        name: "Headphone",
+        price: 18000000,
+        material: "Plastic",
+        date: "2024-02-18",
+        image: "../img/Handphone.jpg",
+        description: "Premium gaming headphones",
+        stock: 10,
+      },
+    ];
 
     this.initializeElements();
     this.loadCart();
@@ -14,30 +59,39 @@ class ShopManager {
 
   async fetchProducts() {
     try {
+      // 1. Get local products
+      const localProducts =
+        JSON.parse(localStorage.getItem("store_products")) || [];
+      this.products = [...this.staticProducts, ...localProducts];
+
+      // 2. Fetch API products separately
       const response = await fetch("https://fakestoreapi.com/products");
       if (!response.ok) throw new Error("Network response was not ok");
 
-      const data = await response.json();
-      this.products = data.map((item) => ({
-        id: item.id,
+      const apiData = await response.json();
+      this.apiProducts = apiData.map((item) => ({
+        id: `api_${item.id}`,
         name: item.title,
         price: Math.round(item.price * 15000),
         category: item.category,
-        material: this.getRandomMaterial(), // Add material
+        material: this.getRandomMaterial(),
         date: new Date(
           Date.now() - Math.random() * 1000 * 60 * 60 * 24 * 30
-        ).toISOString(), // Random date within last 30 days
+        ).toISOString(),
         image: item.image,
         description: item.description,
         stock: 5,
+        isApiProduct: true, // Flag to identify API products
       }));
 
-      this.filteredProducts = [...this.products];
+      // 3. Combine all products for display
+      this.filteredProducts = [...this.products, ...this.apiProducts];
       this.displayProducts();
     } catch (error) {
       console.error("Error fetching products:", error);
-      this.productsContainer.innerHTML =
-        '<p class="error">Gagal memuat produk</p>';
+      // If API fails, still show local products
+      this.filteredProducts = [...this.products];
+      this.displayProducts();
     }
   }
 
@@ -69,7 +123,8 @@ class ShopManager {
   }
 
   filterProducts() {
-    let filtered = [...this.products];
+    // Start with all products
+    let filtered = [...this.products, ...this.apiProducts];
     const searchTerm = this.searchInput?.value.toLowerCase() || "";
     const sortBy = this.sortSelect?.value || "";
     const category = this.categorySelect?.value || "";
@@ -231,8 +286,8 @@ class ShopManager {
     }
 
     // Update product stock
-    this.cart.forEach(item => {
-      const product = this.products.find(p => p.id === item.id);
+    this.cart.forEach((item) => {
+      const product = this.products.find((p) => p.id === item.id);
       if (product) {
         product.stock -= item.quantity;
       }
@@ -242,16 +297,27 @@ class ShopManager {
   }
 
   addToCart(productId) {
-    const product = this.products.find((p) => p.id === productId);
+    // Find product from all sources (static, admin-added, and API products)
+    const product = this.filteredProducts.find(
+      (p) =>
+        // Convert both to strings for comparison since API products use string IDs
+        String(p.id) === String(productId)
+    );
 
     // Check if product exists and has stock
-    if (!product) return;
+    if (!product) {
+      console.error("Product not found:", productId);
+      return;
+    }
+
     if (product.stock === 0) {
       this.showCartNotification("Produk tidak tersedia");
       return;
     }
 
-    const existingItem = this.cart.find((item) => item.id === productId);
+    const existingItem = this.cart.find(
+      (item) => String(item.id) === String(productId)
+    );
 
     if (existingItem) {
       // Check if adding one more would exceed stock
@@ -265,6 +331,7 @@ class ShopManager {
         id: product.id,
         name: product.name,
         price: product.price,
+        image: product.image,
         quantity: 1,
         maxStock: product.stock,
       });
@@ -278,7 +345,9 @@ class ShopManager {
   }
 
   removeFromCart(productId) {
-    const itemIndex = this.cart.findIndex((item) => item.id === productId);
+    const itemIndex = this.cart.findIndex(
+      (item) => String(item.id) === String(productId)
+    );
     if (itemIndex > -1) {
       if (this.cart[itemIndex].quantity > 1) {
         this.cart[itemIndex].quantity--;
@@ -357,9 +426,17 @@ class ShopManager {
         const cartItem = this.cart.find((item) => item.id === product.id);
         const isInCart = Boolean(cartItem);
         const isOutOfStock = product.stock === 0;
+        const isApiProduct = product.isApiProduct;
+        // Add a badge for API products
+        const apiProductBadge = isApiProduct
+          ? `<div class="api-product-badge">API Product</div>`
+          : "";
 
         return `
-        <div class="product-card" data-id="${product.id}">
+        <div class="product-card ${
+          isApiProduct ? "api-product" : ""
+        }" data-id="${product.id}">
+          ${apiProductBadge}
           <div class="product-image">
             <img src="${product.image}" alt="${product.name}" loading="lazy">
           </div>
@@ -578,7 +655,8 @@ class ShopManager {
     document.querySelectorAll(".add-to-cart").forEach((btn) => {
       btn.onclick = (e) => {
         e.preventDefault();
-        const productId = parseInt(e.currentTarget.dataset.id);
+        e.stopPropagation();
+        const productId = btn.dataset.id;
         this.addToCart(productId);
       };
     });
@@ -587,8 +665,9 @@ class ShopManager {
     document.querySelectorAll(".buy-btn").forEach((btn) => {
       btn.onclick = (e) => {
         e.preventDefault();
-        const productId = parseInt(e.currentTarget.dataset.id);
-        this.handleBuyNow(productId);
+        e.stopPropagation();
+        const productId = btn.dataset.id;
+        this.showBuyOptions(productId, btn);
       };
     });
 
@@ -596,7 +675,8 @@ class ShopManager {
     document.querySelectorAll(".minus-btn").forEach((btn) => {
       btn.onclick = (e) => {
         e.preventDefault();
-        const productId = parseInt(e.currentTarget.dataset.id);
+        e.stopPropagation();
+        const productId = btn.dataset.id;
         this.removeFromCart(productId);
       };
     });
@@ -604,7 +684,8 @@ class ShopManager {
     document.querySelectorAll(".plus-btn").forEach((btn) => {
       btn.onclick = (e) => {
         e.preventDefault();
-        const productId = parseInt(e.currentTarget.dataset.id);
+        e.stopPropagation();
+        const productId = btn.dataset.id;
         this.addToCart(productId);
       };
     });
@@ -616,6 +697,52 @@ class ShopManager {
     document
       .getElementById("dateSelect")
       ?.addEventListener("change", () => this.filterProducts());
+  }
+
+  showBuyOptions(productId, buyBtn) {
+    const product = this.filteredProducts.find(
+      (p) => String(p.id) === String(productId)
+    );
+
+    // Create overlay
+    const overlay = document.createElement("div");
+    overlay.className = "buy-options-overlay";
+    document.body.appendChild(overlay);
+
+    // Create modal
+    const modal = document.createElement("div");
+    modal.className = "buy-options-modal";
+    modal.innerHTML = `
+      <div class="title">Konfirmasi Pembelian "${product.name}"</div>
+      <div class="button-group">
+      <button class="btn-cancel">
+      <i class="fas fa-times"></i> Batal
+      </button>
+      <button class="btn-checkout">
+        <i class="fas fa-check"></i> Checkout
+      </button>
+      </div>
+    `;
+
+    // Handle button clicks
+    modal.querySelector(".btn-checkout").onclick = (e) => {
+      e.stopPropagation();
+      this.addToCart(productId);
+      this.handleCheckout();
+      this.closeBuyOptions(overlay, modal);
+    };
+
+    modal.querySelector(".btn-cancel").onclick = (e) => {
+      e.stopPropagation();
+      this.closeBuyOptions(overlay, modal);
+    };
+
+    document.body.appendChild(modal);
+  }
+
+  closeBuyOptions(overlay, modal) {
+    overlay.remove();
+    modal.remove();
   }
 
   handleBuyNow(productId) {
@@ -669,7 +796,7 @@ class ShopManager {
       alert("Keranjang belanja kosong");
       return;
     }
-    
+
     if (!this.isCartOpen) {
       this.showCartDropdown();
     } else {
@@ -685,32 +812,110 @@ class ShopManager {
       document.body.appendChild(cartDropdown);
     }
 
+    const totalPrice = this.calculateTotal();
     cartDropdown.innerHTML = `
       <div class="cart-header">
         <h3>Keranjang Belanja</h3>
         <span>${this.cart.length} item</span>
       </div>
       <div class="cart-items">
-        ${this.cart.map(item => `
+        ${this.cart
+          .map(
+            (item) => `
           <div class="cart-item">
-            <img src="${this.products.find(p => p.id === item.id)?.image}" alt="${item.name}">
+            <img src="${item.image}" alt="${item.name}">
             <div class="cart-item-details">
               <div class="cart-item-name">${item.name}</div>
               <div class="cart-item-price">
-                ${item.quantity}x Rp ${item.price.toLocaleString("id-ID")}
+                Rp ${(item.price * item.quantity).toLocaleString("id-ID")}
+              </div>
+              <div class="cart-item-controls">
+                <div class="cart-item-quantity">
+                  <button class="cart-quantity-btn minus-btn" data-id="${
+                    item.id
+                  }" 
+                    ${item.quantity <= 1 ? "disabled" : ""}>
+                    <i class="fas fa-minus"></i>
+                  </button>
+                  <span class="cart-quantity-display">${item.quantity}</span>
+                  <button class="cart-quantity-btn plus-btn" data-id="${
+                    item.id
+                  }"
+                    ${item.quantity >= item.maxStock ? "disabled" : ""}>
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+                <button class="cart-remove-btn" data-id="${item.id}">
+                  <i class="fas fa-trash"></i>
+                </button>
               </div>
             </div>
           </div>
-        `).join("")}
+        `
+          )
+          .join("")}
       </div>
       <div class="cart-actions">
         <button class="btn-cancel" onclick="shop.closeCart()">Batal</button>
-        <button class="btn-checkout" onclick="shop.handleCheckout()">Checkout</button>
+        <button class="btn-checkout" onclick="shop.handleCheckout()">
+          Checkout (Rp ${totalPrice.toLocaleString("id-ID")})
+        </button>
       </div>
     `;
 
+    // Attach event listeners
+    cartDropdown.querySelectorAll(".minus-btn").forEach((btn) => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const productId = btn.dataset.id;
+        this.removeFromCart(productId);
+        // Refresh cart display
+        this.showCartDropdown();
+      };
+    });
+
+    cartDropdown.querySelectorAll(".plus-btn").forEach((btn) => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const productId = btn.dataset.id;
+        this.addToCart(productId);
+        // Refresh cart display
+        this.showCartDropdown();
+      };
+    });
+
+    cartDropdown.querySelectorAll(".cart-remove-btn").forEach((btn) => {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        const productId = btn.dataset.id;
+        this.removeItemFromCart(productId);
+      };
+    });
+
     setTimeout(() => cartDropdown.classList.add("show"), 10);
     this.isCartOpen = true;
+  }
+
+  removeItemFromCart(productId) {
+    const itemIndex = this.cart.findIndex(
+      (item) => String(item.id) === String(productId)
+    );
+    if (itemIndex > -1) {
+      this.cart.splice(itemIndex, 1);
+      this.saveCartToSession();
+      this.saveCartToCookies();
+      this.updateCartDisplay();
+      this.displayProducts();
+      this.showCartNotification("Produk dihapus dari keranjang");
+
+      // Close cart if empty
+      if (this.cart.length === 0) {
+        this.closeCart();
+      } else {
+        // Refresh cart display
+        this.showCartDropdown();
+      }
+    }
   }
 
   closeCart() {

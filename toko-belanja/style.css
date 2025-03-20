@@ -241,7 +241,8 @@ header {
   border: 1px solid rgba(69, 243, 255, 0.2);
   z-index: 1000;
   cursor: pointer;
-  transition: all 0.3s ease;  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
@@ -321,14 +322,17 @@ header {
   justify-content: center;
   align-items: center;
   padding: 20px;
+  overflow-y: auto; /* Allow modal to scroll */
 }
 
 .receipt-content {
   background: white;
-  width: 58mm;
-  padding: 8mm;
+  width: 80mm; /* Increased width slightly */
+  max-height: 90vh; /* Limit height to 90% of viewport */
+  padding: 10mm;
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow-y: auto; /* Enable scrolling */
 }
 
 .receipt {
@@ -336,6 +340,8 @@ header {
   font-size: 9pt;
   line-height: 1.2;
   color: black;
+  max-height: calc(90vh - 100px); /* Leave space for buttons */
+  overflow-y: auto;
 }
 
 .receipt-header {
@@ -361,6 +367,9 @@ header {
 
 .receipt-items {
   margin: 3mm 0;
+  max-height: 60vh; /* Limit height of items section */
+  overflow-y: auto;
+  padding-right: 5px; /* Add padding for scrollbar */
 }
 
 .receipt-item {
@@ -433,10 +442,18 @@ header {
     position: absolute;
     left: 0;
     top: 0;
+    width: 80mm;
+    height: auto;
+    max-height: none;
+    overflow: visible;
   }
   .print-btn,
   .close-btn {
     display: none;
+  }
+  .receipt-items {
+    max-height: none;
+    overflow: visible;
   }
 }
 
@@ -641,7 +658,8 @@ header {
   margin: 0.3rem 0;
 }
 
-.material, .date {
+.material,
+.date {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -692,6 +710,7 @@ header {
 }
 
 .cart-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -719,6 +738,62 @@ header {
 .cart-item-price {
   color: #45f3ff;
   font-size: 0.85rem;
+}
+
+.cart-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.cart-item-quantity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(69, 243, 255, 0.1);
+  padding: 0.2rem;
+  border-radius: 4px;
+}
+
+.cart-quantity-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 4px;
+  background: #45f3ff;
+  color: #1c1c1c;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cart-quantity-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cart-quantity-display {
+  min-width: 20px;
+  text-align: center;
+  color: #45f3ff;
+}
+
+.cart-remove-btn {
+  padding: 0.2rem 0.5rem;
+  border: none;
+  border-radius: 4px;
+  background: #ff2770;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.8rem;
+}
+
+.cart-remove-btn:hover {
+  background: #e6255f;
 }
 
 .cart-actions {
@@ -765,4 +840,191 @@ header {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.api-product {
+  position: relative;
+  border-color: #ff2770;
+}
+
+.api-product-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ff2770;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  z-index: 1;
+}
+
+.api-product .product-image {
+  background: rgba(255, 39, 112, 0.1);
+}
+
+.api-product:hover {
+  transform: translateY(-8px);
+  border-color: #ff2770;
+  box-shadow: 0 8px 16px rgba(255, 39, 112, 0.2);
+}
+
+.admin-product {
+  position: relative;
+  border-color: #45f3ff;
+}
+
+.admin-product-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #45f3ff;
+  color: #1c1c1c;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  z-index: 1;
+}
+
+.admin-product .product-image {
+  background: rgba(69, 243, 255, 0.1);
+}
+
+.admin-product:hover {
+  transform: translateY(-8px);
+  border-color: #45f3ff;
+  box-shadow: 0 8px 16px rgba(69, 243, 255, 0.2);
+}
+
+.buy-options {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 15px;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 1.5rem;
+  margin-top: 0.5rem;
+  z-index: 10;
+  animation: slideUp 0.3s ease;
+}
+
+.buy-options button {
+  flex: 1;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.buy-options .btn-checkout {
+  background: #45f3ff;
+  color: #1c1c1c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.buy-options .btn-cancel {
+  background: #ff2770;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.buy-options button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.buy-options button:active {
+  transform: translateY(0);
+}
+
+.buy-options-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1c1c1c;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(69, 243, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  width: 90%;
+  max-width: 400px;
+  animation: fadeIn 0.3s ease;
+}
+
+.buy-options-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+.buy-options-modal .title {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.buy-options-modal .button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.buy-options-modal button {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Add custom scrollbar styling */
+.receipt-items::-webkit-scrollbar {
+  width: 6px;
+}
+
+.receipt-items::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.receipt-items::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.receipt-items::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

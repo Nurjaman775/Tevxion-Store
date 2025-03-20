@@ -8,19 +8,7 @@ function validateName(name) {
     return "Nama hanya boleh mengandung huruf (a-z) dan spasi";
   }
 
-  // Proper case validation (each word must start with capital letter)
-  const words = name.split(" ");
-  const properCase = words.every(
-    (word) =>
-      word.length > 0 &&
-      word[0] === word[0].toUpperCase() &&
-      word.slice(1) === word.slice(1).toLowerCase()
-  );
-
-  if (!properCase) {
-    return "Gunakan format Proper Case (contoh: John Doe)";
-  }
-
+  // Word case validation not needed anymore since we auto-capitalize
   return "";
 }
 
@@ -51,23 +39,22 @@ function validatePassword(password) {
 function validateWhatsApp(whatsapp) {
   if (!whatsapp.trim()) return "Nomor WhatsApp tidak boleh kosong";
 
-  // Clean the number and convert leading 0 to 62
+  // Convert leading 0 to 62
   let cleanNumber = whatsapp.trim();
-  if (cleanNumber.startsWith('0')) {
-    cleanNumber = '62' + cleanNumber.substring(1);
-  }
-  
-  // Update input field with converted number
-  const whatsappInput = document.getElementById('whatsapp');
-  if (whatsappInput) {
-    whatsappInput.value = cleanNumber;
+  if (cleanNumber.startsWith("0")) {
+    cleanNumber = "62" + cleanNumber.substring(1);
+
+    // Update input field with converted number
+    const whatsappInput = document.getElementById("whatsapp");
+    if (whatsappInput) {
+      whatsappInput.value = cleanNumber;
+    }
   }
 
   const whatsappRegex = /^628[0-9]{8,11}$/;
   if (!whatsappRegex.test(cleanNumber)) {
     return "Nomor WhatsApp harus diawali 628 dan berisi 11-14 digit angka";
   }
-  
   return "";
 }
 
@@ -100,7 +87,20 @@ function showError(inputId, message) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Objek input beserta fungsi validasinya
+  // Add input event listener for fullName
+  const fullNameInput = document.getElementById("fullName");
+  if (fullNameInput) {
+    fullNameInput.addEventListener("input", function (e) {
+      let words = e.target.value.split(" ");
+      // Capitalize first letter of each word
+      words = words.map((word) =>
+        word ? word.charAt(0).toUpperCase() + word.slice(1) : ""
+      );
+      e.target.value = words.join(" ");
+    });
+  }
+
+  // Rest of your event listeners
   const inputs = {
     fullName: { validate: validateName },
     username: { validate: validateUsername },

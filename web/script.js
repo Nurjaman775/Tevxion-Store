@@ -5,27 +5,26 @@ document.addEventListener("DOMContentLoaded", function () {
 function checkAuthStatus() {
   const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
   const navLinks = document.querySelector(".nav-links");
-  const loginRegisterBtns = document.querySelectorAll(
-    ".btn-login, .btn-register"
-  );
-  const userProfileBtn = document.getElementById("userProfileBtn");
+  const loginRegisterBtns = document.querySelectorAll(".btn-login, .btn-register");
 
   if (currentUser) {
-    // User is logged in
-    loginRegisterBtns.forEach((btn) => (btn.style.display = "none"));
+    loginRegisterBtns.forEach(btn => btn.style.display = "none");
 
-    // Create profile button
     const profileLink = document.createElement("li");
+    const firstLetter = currentUser.username.charAt(0).toUpperCase();
+    
     profileLink.innerHTML = `
-            <div class="user-profile">
-                <span class="username">${currentUser.username}</span>
-                <div class="profile-dropdown">
-                    <a href="../dashboard/profile.html">My Profile</a>
-                    <a href="../toko-belanja/index.html">My Cart</a>
-                    <a href="#" onclick="handleLogout()">Logout</a>
-                </div>
-            </div>
-        `;
+      <div class="user-profile">
+        <div class="user-avatar">${firstLetter}</div>
+        <span class="username">${currentUser.username}</span>
+      </div>
+    `;
+
+    // Make entire profile clickable
+    profileLink.querySelector('.user-profile').onclick = () => {
+      window.location.href = '../dashboard/profile.html';
+    };
+
     navLinks.appendChild(profileLink);
   }
 }
