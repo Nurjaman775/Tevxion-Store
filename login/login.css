@@ -293,6 +293,12 @@ input::placeholder, .username {
     opacity: 0.5;
 }
 
+.google-signin img {
+  width: 20px;
+  height: 20px;
+}
+
+
 @media screen and (max-width: 480px) {
   .box form {
     padding: 30px 15px;

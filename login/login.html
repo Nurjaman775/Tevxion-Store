@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" href="login.css" />
+
     <link
       href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
@@ -29,12 +30,16 @@
     />
     <link rel="icon" href="/Cookie2/img/favicon.ico" type="image/x-icon" />
     <title>TevxioN-Login</title>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="auth.js"></script>
   </head>
   <body>
     <div class="box">
       <div class="out">
-        <a href="/web/index.html" title="Return to home page"><i class="bx bx-undo"></i></a>
+        <a href="/web/index.html" title="Return to home page"
+          ><i class="bx bx-undo"></i
+        ></a>
       </div>
       <span class="borderLine"></span>
       <form id="loginForm" onsubmit="return handleLogin(event)">
@@ -70,12 +75,13 @@
         </div>
         <div class="links">
           <a href="#" title="Reset your password">Forgot Password</a>
-          <a href="/register/register.html" title="Create new account">Register</a>
+          <a href="/register/register.html" title="Create new account"
+            >Register</a
+          >
         </div>
 
         <input type="submit" value="Login" title="Click to login" />
         <div class="google-signin">
-
           <button type="button" id="googleSignIn" title="Sign in with Google">
             <img
               src="https://developers.google.com/identity/images/g-logo.png"

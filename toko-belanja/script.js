@@ -80,7 +80,7 @@ class ShopManager {
         ).toISOString(),
         image: item.image,
         description: item.description,
-        stock: 5,
+        stock: 10,
         isApiProduct: true, // Flag to identify API products
       }));
 
