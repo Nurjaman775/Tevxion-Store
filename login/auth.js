@@ -1,5 +1,3 @@
-import config from "./config.js";
-
 // Mock user database
 const users = [
   { username: "admin", password: "admin123", role: "admin" },
@@ -54,71 +52,61 @@ function handleLogin(event) {
   return false;
 }
 
+// Firebase configuration - use environment variables
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
 // Initialize Google Sign-In
 function initGoogleSignIn() {
-  google.accounts.id.initialize({
-    client_id: config.google.clientId,
-    callback: handleGoogleSignIn,
-    auto_select: false,
-    ux_mode: "popup",
-    context: "signin",
-    error_callback: (error) => {
-      console.error("Google Sign-In Error:", error);
-      alert("Failed to initialize Google Sign-In. Please try again.");
-    },
-  });
+  const googleSignInBtn = document.getElementById("googleSignIn");
+  if (googleSignInBtn) {
+    googleSignInBtn.addEventListener("click", async () => {
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const result = await firebase.auth().signInWithPopup(provider);
 
-  google.accounts.id.renderButton(document.getElementById("googleSignIn"), {
-    theme: "outline",
-    size: "large",
-  });
-}
+        // Create user object
+        const user = {
+          username: result.user.email,
+          fullName: result.user.displayName,
+          email: result.user.email,
+          role: "customer",
+          googleId: result.user.uid,
+        };
 
-// Handle Google Sign-In
-async function handleGoogleSignIn(response) {
-  try {
-    // Verify Google token and get user info
-    const { credential } = response;
+        // Store in localStorage
+        const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+        if (!existingUsers.some((u) => u.email === user.email)) {
+          existingUsers.push(user);
+          localStorage.setItem("users", JSON.stringify(existingUsers));
+        }
 
-    // Create user object from Google data
-    const user = {
-      username: response.email,
-      fullName: response.name,
-      email: response.email,
-      role: "customer",
-      googleId: response.sub,
-    };
+        // Set session
+        sessionStorage.setItem("currentUser", JSON.stringify(user));
 
-    // Store user in local storage
-    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-    if (!existingUsers.some((u) => u.email === user.email)) {
-      existingUsers.push(user);
-      localStorage.setItem("users", JSON.stringify(existingUsers));
-    }
-
-    // Set session
-    sessionStorage.setItem("currentUser", JSON.stringify(user));
-
-    // Redirect based on return URL or to products page
-    const returnUrl = sessionStorage.getItem("returnUrl");
-    if (returnUrl) {
-      sessionStorage.removeItem("returnUrl");
-      window.location.href = returnUrl;
-    } else {
-      window.location.href = "/toko-belanja/index.html";
-    }
-  } catch (error) {
-    console.error("Error during Google sign-in:", error);
-    alert("Failed to sign in with Google. Please try again.");
+        // Redirect
+        window.location.href = "../toko-belanja/index.html";
+      } catch (error) {
+        console.error("Google Sign-In Error:", error);
+        alert("Login gagal: " + error.message);
+      }
+    });
   }
 }
 
-// Add Google Sign-In script
-document.addEventListener("DOMContentLoaded", function () {
-  const script = document.createElement("script");
-  script.src = "https://accounts.google.com/gsi/client";
-  script.async = true;
-  script.defer = true;
-  script.onload = initGoogleSignIn;
-  document.head.appendChild(script);
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("loginForm");
+  if (form) {
+    form.addEventListener("submit", handleLogin);
+  }
+  initGoogleSignIn();
 });
